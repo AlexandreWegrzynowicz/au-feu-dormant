@@ -109,9 +109,9 @@ let quests = [
 
 try {
   const mjData = JSON.parse(localStorage.getItem("afd_mj_data_v1") || "null");
-  if (mjData && Array.isArray(mjData.travelers) && mjData.travelers.length) travelers = mjData.travelers;
-  if (mjData && Array.isArray(mjData.quests) && mjData.quests.length) quests = mjData.quests;
-  if (mjData && Array.isArray(mjData.rumors) && mjData.rumors.length) {
+  if (mjData && Array.isArray(mjData.travelers)) travelers = mjData.travelers;
+  if (mjData && Array.isArray(mjData.quests)) quests = mjData.quests;
+  if (mjData && Array.isArray(mjData.rumors)) {
     window.afdRumors = mjData.rumors;
   }
 } catch {
@@ -461,8 +461,8 @@ async function loadOnlinePortalData() {
   if (!window.afdSupabase) return;
   try {
     const onlineData = await window.afdSupabase.loadState({ travelers, quests, rumors: window.afdRumors || [] });
-    if (Array.isArray(onlineData.travelers) && onlineData.travelers.length) travelers = onlineData.travelers;
-    if (Array.isArray(onlineData.quests) && onlineData.quests.length) quests = onlineData.quests;
+    if (Array.isArray(onlineData.travelers)) travelers = onlineData.travelers;
+    if (Array.isArray(onlineData.quests)) quests = onlineData.quests;
     if (Array.isArray(onlineData.rumors)) window.afdRumors = onlineData.rumors;
     showAllTravelers = false;
     showAllQuests = false;
