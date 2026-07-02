@@ -27,6 +27,7 @@
       <a href="#aventures">Aventures</a>
       <a href="#voyageurs">Voyageurs</a>
       <a href="#quetes">Contrats</a>
+      <a href="#reservations">R&eacute;servations RP</a>
       <a href="#rejoindre">Rejoindre</a>
       <a class="nav-cta" href="https://discord.gg/atbfrdFfNr" target="_blank" rel="noopener">Salle commune</a>
     </nav>
@@ -209,6 +210,78 @@
         </ul>
         <button id="toggle-rumors" class="button secondary reveal-button" type="button" hidden>Écouter les autres murmures</button>
       </aside>
+    </section>
+
+    <section id="reservations" class="section split-section reservation-section">
+      <div>
+        <p class="eyebrow">R&eacute;servations RP</p>
+        <h2>Retenez une clef avant que la nuit ne tombe.</h2>
+        <p>Choisissez une chambre, ajoutez les attentions voulues, puis envoyez la demande au personnel de l'auberge. La r&eacute;ponse se fera dans la salle commune.</p>
+        <div class="notice-board room-board" aria-label="Chambres disponibles">
+          <h3>Chambres disponibles</h3>
+          <dl>
+            <div><dt>Chambre I - Dortoir</dt><dd>Lit : 20 argent&eacute;es. Lit priv&eacute; : 50 argent&eacute;es.</dd></div>
+            <div><dt>Chambre II</dt><dd>Chambre individuelle : 1 dor&eacute;e.</dd></div>
+            <div><dt>Chambre III</dt><dd>Chambre de luxe : 5 dor&eacute;es.</dd></div>
+          </dl>
+        </div>
+      </div>
+      <form id="reservation-form" class="form-panel reservation-form">
+        <label>Nom du personnage
+          <input name="characterName" required maxlength="64" placeholder="Ex. Thorring">
+        </label>
+        <label>Chambre souhait&eacute;e
+          <select name="room" required>
+            <option value="">Choisir une chambre</option>
+            <option value="dortoir-lit">Chambre I - Dortoir, lit simple - 20 argent&eacute;es</option>
+            <option value="dortoir-prive">Chambre I - Dortoir, lit priv&eacute; - 50 argent&eacute;es</option>
+            <option value="chambre-ii">Chambre II, individuelle - 1 dor&eacute;e</option>
+            <option value="chambre-iii">Chambre III, luxe - 5 dor&eacute;es</option>
+          </select>
+        </label>
+        <label>Date d'arriv&eacute;e RP
+          <input name="arrivalDate" maxlength="80" placeholder="Ex. Ce soir apr&egrave;s la patrouille">
+        </label>
+        <label>Dur&eacute;e du s&eacute;jour
+          <select name="duration">
+            <option value="1">Une nuit</option>
+            <option value="2">Deux nuits</option>
+            <option value="3">Trois nuits</option>
+            <option value="7">Une semaine</option>
+            <option value="1">S&eacute;jour ind&eacute;termin&eacute;</option>
+          </select>
+        </label>
+        <label>Nombre d'occupants
+          <input name="occupants" type="number" min="1" max="12" value="1">
+        </label>
+        <fieldset class="form-fieldset">
+          <legend>Suppl&eacute;ments RP</legend>
+          <label class="check-row">
+            <input name="breakfast" type="checkbox" value="1">
+            <span>Petit-d&eacute;jeuner - 10 argent&eacute;es par occupant et par nuit</span>
+          </label>
+          <label class="check-row">
+            <input name="majordomo" type="checkbox" value="1">
+            <span>Service d'un Majordome - 1 dor&eacute;e par s&eacute;jour</span>
+          </label>
+        </fieldset>
+        <label>Demandes particuli&egrave;res
+          <textarea name="requests" maxlength="600" placeholder="Ex. Chambre discr&egrave;te, table pr&egrave;s du feu, aucun visiteur apr&egrave;s minuit..."></textarea>
+        </label>
+        <label>Commentaire libre
+          <textarea name="comment" maxlength="800" placeholder="Un mot au personnel de l'auberge."></textarea>
+        </label>
+        <label>Signature RP
+          <input name="signature" required maxlength="64" placeholder="Nom du personnage">
+        </label>
+        <aside class="reservation-total" aria-live="polite">
+          <p class="eyebrow">Co&ucirc;t estim&eacute;</p>
+          <strong id="reservation-total">0 argent&eacute;e</strong>
+          <p id="reservation-detail">Choisissez une chambre pour commencer le calcul.</p>
+        </aside>
+        <p id="reservation-status" class="form-status" role="status" aria-live="polite"></p>
+        <button class="button primary" type="submit">R&eacute;server</button>
+      </form>
     </section>
 
     <section id="rejoindre" class="section join">

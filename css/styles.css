@@ -36,3 +36,19 @@
 .generated-meta div+div{margin-top:.75rem}
 .generated-meta dt{color:var(--gold)}
 .generated-meta dd{color:#fff2cf}
+.reservation-section{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.reservation-form{position:relative}
+.room-board{margin-top:1.5rem}
+.room-board dl{gap:1rem}
+.room-board dt{color:var(--gold);font-weight:800}
+.room-board dd{color:#fff2cf}
+.form-fieldset{display:grid;gap:.65rem;margin:0;padding:1rem;border:1px solid var(--line);background:rgba(6,5,4,.32)}
+.form-fieldset legend{padding:0 .4rem;color:var(--gold);font-family:Arial,sans-serif;font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.04rem}
+.check-row{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:start;gap:.65rem;color:var(--parchment);font-family:Georgia,"Times New Roman",serif;font-size:1rem;font-weight:400}
+.check-row input{width:1.1rem;min-height:1.1rem;margin-top:.2rem;accent-color:var(--gold)}
+.reservation-total{padding:1rem;border:1px solid rgba(242,181,68,.45);background:linear-gradient(180deg,rgba(16,13,11,.72),rgba(43,22,13,.58))}
+.reservation-total strong{display:block;color:var(--gold);font-size:clamp(1.6rem,3vw,2.3rem);line-height:1.05}
+.reservation-total p:last-child{margin:.65rem 0 0;color:var(--mist)}
+.form-status{min-height:1.4rem;margin:0;color:#fff2cf}
+.button:disabled{cursor:wait;filter:grayscale(.35);opacity:.72}
+@media (min-width:821px){.site-nav{flex-wrap:wrap;justify-content:flex-end}.site-nav a{padding:.7rem .85rem}}

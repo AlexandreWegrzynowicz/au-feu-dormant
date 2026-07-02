@@ -134,6 +134,10 @@ const travelerSearch = document.querySelector("#traveler-search");
 const toggleTravelers = document.querySelector("#toggle-travelers");
 const toggleQuests = document.querySelector("#toggle-quests");
 const toggleRumors = document.querySelector("#toggle-rumors");
+const reservationForm = document.querySelector("#reservation-form");
+const reservationTotal = document.querySelector("#reservation-total");
+const reservationDetail = document.querySelector("#reservation-detail");
+const reservationStatus = document.querySelector("#reservation-status");
 let currentQuestFilter = "all";
 let showAllTravelers = false;
 let showAllQuests = false;
@@ -335,6 +339,105 @@ function updateRevealButton(button, total, isExpanded, label) {
 function normalizeSearch(value) {
   return String(value || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
+
+const roomPrices = {
+  "dortoir-lit": { label: "Chambre I - Dortoir, lit simple", price: 20 },
+  "dortoir-prive": { label: "Chambre I - Dortoir, lit prive", price: 50 },
+  "chambre-ii": { label: "Chambre II, individuelle", price: 100 },
+  "chambre-iii": { label: "Chambre III, luxe", price: 500 }
+};
+
+function calculateReservationCost(data) {
+  const room = roomPrices[data.room] || null;
+  const nights = Math.max(1, Number(data.duration) || 1);
+  const occupants = Math.max(1, Math.min(12, Number(data.occupants) || 1));
+  const roomCost = room ? room.price * nights : 0;
+  const breakfastCost = data.breakfast ? 10 * occupants * nights : 0;
+  const majordomoCost = data.majordomo ? 100 : 0;
+  const total = roomCost + breakfastCost + majordomoCost;
+  const supplements = [
+    data.breakfast ? `Petit-dejeuner (${formatRpCost(breakfastCost)})` : "",
+    data.majordomo ? `Majordome (${formatRpCost(majordomoCost)})` : ""
+  ].filter(Boolean);
+  return {
+    room,
+    nights,
+    occupants,
+    total,
+    totalLabel: formatRpCost(total),
+    supplements: supplements.length ? supplements : ["Aucun supplement"]
+  };
+}
+
+function formatRpCost(value) {
+  const gold = Math.floor(value / 100);
+  const silver = value % 100;
+  const parts = [];
+  if (gold) parts.push(`${gold} doree${gold > 1 ? "s" : ""}`);
+  if (silver || !parts.length) parts.push(`${silver} argentee${silver > 1 ? "s" : ""}`);
+  return parts.join(" et ");
+}
+
+function getReservationData() {
+  if (!reservationForm) return {};
+  const data = Object.fromEntries(new FormData(reservationForm).entries());
+  data.breakfast = Boolean(reservationForm.elements.breakfast?.checked);
+  data.majordomo = Boolean(reservationForm.elements.majordomo?.checked);
+  return data;
+}
+
+function updateReservationTotal() {
+  if (!reservationForm || !reservationTotal || !reservationDetail) return;
+  const data = getReservationData();
+  const cost = calculateReservationCost(data);
+  reservationTotal.textContent = cost.totalLabel;
+  if (!cost.room) {
+    reservationDetail.textContent = "Choisissez une chambre pour commencer le calcul.";
+    return;
+  }
+  reservationDetail.textContent = `${cost.room.label} x ${cost.nights} nuit(s), ${cost.occupants} occupant(s). Supplements : ${cost.supplements.join(", ")}.`;
+}
+
+reservationForm?.addEventListener("input", updateReservationTotal);
+reservationForm?.addEventListener("change", updateReservationTotal);
+reservationForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!reservationForm.reportValidity()) return;
+  const button = reservationForm.querySelector("button[type=submit]");
+  const data = getReservationData();
+  const cost = calculateReservationCost(data);
+  const payload = {
+    characterName: String(data.characterName || "").trim(),
+    signature: String(data.signature || "").trim(),
+    room: cost.room?.label || "",
+    arrivalDate: String(data.arrivalDate || "Non precisee").trim(),
+    duration: reservationForm.elements.duration?.selectedOptions?.[0]?.textContent || "Une nuit",
+    occupants: cost.occupants,
+    supplements: cost.supplements,
+    requests: String(data.requests || "Aucune").trim(),
+    comment: String(data.comment || "Aucun").trim(),
+    total: cost.totalLabel
+  };
+  reservationStatus.textContent = "Le registre transmet la demande...";
+  button.disabled = true;
+  try {
+    const response = await fetch("/.netlify/functions/reservation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.error || "Envoi impossible.");
+    reservationStatus.textContent = "Reservation envoyee au personnel de l'auberge.";
+    reservationForm.reset();
+    updateReservationTotal();
+  } catch (error) {
+    reservationStatus.textContent = `Le message n'a pas pu partir : ${error.message}`;
+  } finally {
+    button.disabled = false;
+  }
+});
+updateReservationTotal();
 
 form?.addEventListener("submit", async (event) => {
   event.preventDefault();
